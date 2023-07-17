@@ -6,46 +6,35 @@
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 11:59:27 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/17 19:34:12 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/17 20:24:04 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*read_line(int fd, char *backup)
+static char	*read_line(int fd, char *backup, char *buf)
 {
-	char	*buffer;
 	char	*tmp;
 	int		bytes_read;
 
 	bytes_read = 42;
-	tmp = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (!tmp)
-		return (NULL);
-	while (bytes_read > 0 && ft_strchr(buffer, '\n') == NULL)
+	while (bytes_read > 0 && ft_strchr(backup, '\n') == NULL)
 	{
-		bytes_read = read(fd, tmp, BUFFER_SIZE);
-		tmp[bytes_read] = '\0';
+		bytes_read = read(fd, buf, BUFFER_SIZE);
+		buf[bytes_read] = '\0';
 		if (bytes_read < 0)
-		{
-			free(tmp);
-			tmp = NULL;
 			return (NULL);
-		}
 		if (bytes_read == 0)
+			return (backup);
+		tmp = backup;
+		backup = ft_strjoin(tmp, buf);
+		if (tmp)
 		{
 			free(tmp);
 			tmp = NULL;
-			return (NULL);
 		}
-		if (buffer)
-			buffer = ft_strjoin(buffer, tmp);
-		else
-			buffer = ft_strjoin(backup, tmp);
 	}
-	free(tmp);
-	tmp = NULL;
-	return (buffer);
+	return (backup);
 }
 
 static char	*make_backup(char *backup, char *buffer)
@@ -83,19 +72,16 @@ char	*get_next_line(int fd)
 {
 	static char	*backup;
 	char		*line;
+	char		*buf;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = read_line(fd, backup);
-	if (!line)
-	{
-		if (backup)
-		{
-			free(backup);
-			backup = NULL;
-		}
+	buf = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buf)
 		return (NULL);
-	}
+	line = read_line(fd, backup, buf);
+	free(buf);
+	buf = NULL;
 	if (ft_strchr(line, '\n'))
 	{
 		backup = make_backup(backup, line);
@@ -112,7 +98,7 @@ char	*get_next_line(int fd)
  int main()
 {
 	char *line;
-	int fd = open("archivo.txt", O_RDONLY);  // Abre el archivo en modo lectura
+	int fd = open("41_no_nl", O_RDONLY);  // Abre el archivo en modo lectura
     if (fd < 0) {
         printf("No se pudo abrir el archivo\n");
         return 1;
@@ -134,7 +120,3 @@ char	*get_next_line(int fd)
     close(fd);  // Cierra el archivo
     return 0;
 }
-
-
-
-
