@@ -6,7 +6,7 @@
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 12:38:13 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/15 14:44:14 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/17 11:39:46 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,51 +22,75 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strdup(const char *str)
+char	*ft_strdup(char *src)
 {
-	size_t	len;
-	char	*duplicate;
-	size_t	i;
+	char	*new;
+	int		i;
+	int		size;
 
-	len = 0;
-	i = 0;
-	while (str[len] != '\0')
-		len++;
-	duplicate = (char *)malloc((len + 1) * sizeof(char));
-	if (duplicate == NULL)
+	if (!src)
 		return (NULL);
-	while (i <= len)
+	size = 0;
+	while (src[size])
+		++size;
+	new = malloc(sizeof(char) * (size + 1));
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (src[i])
 	{
-		duplicate[i] = str[i];
+		new[i] = src[i];
 		i++;
 	}
-	return (duplicate);
+	new[i] = '\0';	
+	return (new);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+// char	*ft_strdup(const char *str)
+// {
+// 	size_t	len;
+// 	char	*duplicate;
+// 	size_t	i;
+
+// 	len = 0;
+// 	i = 0;
+// 	while (str[len] != '\0')
+// 		len++;
+// 	duplicate = (char *)malloc((len + 1) * sizeof(char));
+// 	if (duplicate == NULL)
+// 		return (NULL);
+// 	while (i <= len)
+// 	{
+// 		duplicate[i] = str[i];
+// 		i++;
+// 	}
+// 	return (duplicate);
+// }
+
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*str;
 	size_t	i;
 	size_t	j;
 
-	if (!s1 || !s2)
-		return (NULL);
+	if (!s1)
+	{
+		s1 = malloc(sizeof(char) * 1);
+		if (!s1)
+			return (NULL);
+		s1[0] = '\0';
+	}
 	str = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!str)
-		return (NULL);
-	i = 0;
-	while (s1[i])
-	{
+		return (free(s1), NULL);
+	i = -1;
+	while (s1[++i])
 		str[i] = s1[i];
-		i++;
-	}
 	j = 0;
 	while (s2[j])
-	{
-		str[i + j] = s2[j];
-		j++;
-	}
-	str[i + j] = '\0';
+		str[i++] = s2[j++];
+	str[i] = '\0';
+	free(s1);
 	return (str);
 }
 
