@@ -6,18 +6,20 @@
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 12:38:13 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/17 20:13:22 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/18 19:04:26 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char *s)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (s[i])
+	if (!s)
+		return (0);
+	while (s[i] != '\0')
 		i++;
 	return (i);
 }
@@ -96,41 +98,20 @@ char	*ft_strjoin(char *s1, char *s2)
 
 char	*ft_strchr(const char *str, int c)
 {
-	int	i;
+	char	*s;
+	int		i;
 
 	i = 0;
-	if (!str)
-		return (NULL);
-	while (str[i] && (unsigned char)str[i] != (unsigned char)c)
-		i++;
-	if ((unsigned char)str[i] == (unsigned char)c)
-		return ((char *)& str[i]);
-	return (NULL);
-}
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*substr;
-	size_t	len_s;
-	size_t	i;
-
-	len_s = ft_strlen(s);
+	s = (char *)str;
 	if (!s)
 		return (NULL);
-	if (start > len_s)
-		return (ft_strdup(""));
-	len_s -= start;
-	if (len_s < len)
-		len = len_s;
-	substr = (char *)malloc(sizeof(char) * (len + 1));
-	if (!substr)
-		return (NULL);
-	i = 0;
-	while (i < len && s[start + i])
+	while (s[i])
 	{
-		substr[i] = s[start + i];
+		if (s[i] == (char)c)
+			return (&s[i]);
 		i++;
 	}
-	substr[i] = '\0';
-	return (substr);
+	if (c == '\0')
+		return (&s[i]);
+	return (NULL);
 }
