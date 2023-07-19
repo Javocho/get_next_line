@@ -6,7 +6,7 @@
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 11:59:27 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/19 20:59:51 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/19 21:27:00 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static char	*read_line(int fd, char *backup)
 			return (free_buffer(backup));
 		return (NULL);
 	}
-	while (bytes_read > 0 && ft_strchr(backup, '\n') == NULL)
+	while (bytes_read > 0 && !ft_strchr(backup, '\n'))
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		if (bytes_read < 0)
@@ -106,26 +106,34 @@ static char	*extract_line(char *backup)
 
 char	*get_next_line(int fd)
 {
-	static char	*backup = NULL;
 	char		*line;
+	static char	*storage;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 1024)
+	if (BUFFER_SIZE <= 0 || fd < 0 || fd > 1024)
+	{
+		if (storage)
+			free(storage);
 		return (NULL);
-	if (!backup || (backup && !ft_strchr(backup, '\n')))
-		backup = read_line(fd, backup);
-	if (!backup)
+	}
+	if (!storage || (storage && !ft_strchr(storage, '\n')))
+		storage = read_line(fd, storage);
+	if (!storage)
 		return (NULL);
-	line = extract_line(backup);
+	line = extract_line(storage);
 	if (!line)
-		return (free_buffer(backup));
-	backup = make_backup(backup);
+	{
+		free(storage);
+		storage = NULL;
+		return (NULL);
+	}
+	storage = make_backup(storage);
 	return (line);
 }
 
 //  int main()
 // {
 // 	char *line;
-// 	int fd = open("multiple_nl.txt", O_RDONLY);  // Abre el archivo en modo lectura
+// 	int fd = open("multiple_nl.txt", O_RDONLY);
 
 //     // Leer y imprimi	r todas las líneas del archivo
 //     //while ((line = get_next_line(fd)) != NULL) {
