@@ -6,7 +6,7 @@
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 11:59:27 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/18 19:24:52 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/19 20:59:51 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,15 @@ static char	*read_line(int fd, char *backup)
 
 	bytes_read = 42;
 	buf = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buf)
+	{
+		if (backup)
+			return (free_buffer(backup));
+		return (NULL);
+	}
 	while (bytes_read > 0 && ft_strchr(backup, '\n') == NULL)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
-		buf[bytes_read] = '\0';
 		if (bytes_read < 0)
 		{
 			if (backup)
@@ -38,6 +43,7 @@ static char	*read_line(int fd, char *backup)
 		}
 		if (bytes_read == 0 && !backup)
 			return (free_buffer(buf));
+		buf[bytes_read] = '\0';
 		backup = ft_strjoin(backup, buf);
 	}
 	free_buffer(buf);
@@ -56,10 +62,10 @@ static char	*make_backup(char *backup)
 		++start;
 	if (!backup[start])
 		return (free_buffer(backup));
-	start++;
-	tmp = malloc(sizeof(char) * (ft_strlen(backup) - start));
+	tmp = malloc(sizeof(char) * (ft_strlen(backup) - start + 1));
 	if (!tmp)
 		return (free_buffer(backup));
+	++start;
 	while (backup[start + end] != '\0')
 	{
 		tmp[end] = backup[start + end];
@@ -98,24 +104,12 @@ static char	*extract_line(char *backup)
 	return (line);
 }
 
-// char	*extract(char *buffer)
-// {
-// 	int		index;
-// 	char	*tmp;
-
-// 	index = 0;
-// 	while (buffer[index] != '\n' && buffer[index] != '\0')
-// 		index++;
-// 	tmp = ft_substr(buffer, 0, index + 1);
-// 	return (tmp);
-// }
-
 char	*get_next_line(int fd)
 {
-	static char	*backup;
+	static char	*backup = NULL;
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 1024)
 		return (NULL);
 	if (!backup || (backup && !ft_strchr(backup, '\n')))
 		backup = read_line(fd, backup);
@@ -131,7 +125,7 @@ char	*get_next_line(int fd)
 //  int main()
 // {
 // 	char *line;
-// 	int fd = open("41_no_nl", O_RDONLY);  // Abre el archivo en modo lectura
+// 	int fd = open("multiple_nl.txt", O_RDONLY);  // Abre el archivo en modo lectura
 
 //     // Leer y imprimi	r todas las líneas del archivo
 //     //while ((line = get_next_line(fd)) != NULL) {

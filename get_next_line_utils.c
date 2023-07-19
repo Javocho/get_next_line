@@ -6,7 +6,7 @@
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 12:38:13 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/18 19:04:26 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/19 20:42:10 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,9 @@ char	*ft_strchr(const char *str, int c)
 	int		i;
 
 	i = 0;
-	s = (char *)str;
-	if (!s)
+	if (!str)
 		return (NULL);
+	s = (char *)str;
 	while (s[i])
 	{
 		if (s[i] == (char)c)
