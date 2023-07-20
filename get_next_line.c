@@ -6,7 +6,7 @@
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 11:59:27 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/19 21:27:00 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/20 11:05:39 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 
 char	*free_buffer(char *buffer)
 {
-	free(buffer);
-	buffer = NULL;
+	if (buffer)
+	{
+		free(buffer);
+		buffer = NULL;
+	}
 	return (NULL);
 }
 
@@ -27,18 +30,13 @@ static char	*read_line(int fd, char *backup)
 	bytes_read = 42;
 	buf = malloc(sizeof(char) * BUFFER_SIZE + 1);
 	if (!buf)
-	{
-		if (backup)
-			return (free_buffer(backup));
-		return (NULL);
-	}
+		return (free_buffer(backup));
 	while (bytes_read > 0 && !ft_strchr(backup, '\n'))
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		if (bytes_read < 0)
 		{
-			if (backup)
-				free_buffer(backup);
+			free_buffer(backup);
 			return (free_buffer(buf));
 		}
 		if (bytes_read == 0 && !backup)
@@ -124,7 +122,7 @@ char	*get_next_line(int fd)
 	{
 		free(storage);
 		storage = NULL;
-		return (NULL);
+		return (free_buffer(storage));
 	}
 	storage = make_backup(storage);
 	return (line);
