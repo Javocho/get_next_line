@@ -6,7 +6,7 @@
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 11:59:27 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/20 11:26:51 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/20 11:43:56 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ static char	*extract_line(char *backup)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*backup[2147483647];
+	static char	*backup[OPEN_MAX];
 
 	if (BUFFER_SIZE <= 0 || fd < 0 || fd > 1024)
 	{

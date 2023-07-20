@@ -6,7 +6,7 @@
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 11:58:01 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/20 11:27:40 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/20 11:43:42 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <limits.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 5
 # endif
