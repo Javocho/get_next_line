@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fcosta-f <fcosta-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 11:59:27 by fcosta-f          #+#    #+#             */
-/*   Updated: 2023/07/20 11:24:29 by fcosta-f         ###   ########.fr       */
+/*   Updated: 2023/07/20 11:26:51 by fcosta-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*free_buffer(char *buffer)
 {
@@ -105,26 +105,26 @@ static char	*extract_line(char *backup)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*backup;
+	static char	*backup[2147483647];
 
 	if (BUFFER_SIZE <= 0 || fd < 0 || fd > 1024)
 	{
-		if (backup)
-			free(backup);
+		if (backup[fd])
+			free(backup[fd]);
 		return (NULL);
 	}
-	if (!backup || (backup && !ft_strchr(backup, '\n')))
-		backup = read_line(fd, backup);
-	if (!backup)
+	if (!backup[fd] || (backup[fd] && !ft_strchr(backup[fd], '\n')))
+		backup[fd] = read_line(fd, backup[fd]);
+	if (!backup[fd])
 		return (NULL);
-	line = extract_line(backup);
+	line = extract_line(backup[fd]);
 	if (!line)
 	{
-		free(backup);
-		backup = NULL;
-		return (free_buffer(backup));
+		free(backup[fd]);
+		backup[fd] = NULL;
+		return (free_buffer(backup[fd]));
 	}
-	backup = make_backup(backup);
+	backup[fd] = make_backup(backup[fd]);
 	return (line);
 }
 
